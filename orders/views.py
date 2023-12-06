@@ -8,13 +8,13 @@ from django.db import IntegrityError
 from django.db.models import Q, Sum, F
 from django.http import JsonResponse
 from requests import get
-from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
+
 
 from .models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
     Contact, ConfirmEmailToken
@@ -389,6 +389,7 @@ class PartnerOrders(APIView):
             total_sum=Sum(F('ordered_items__quantity') * F('ordered_items__product_info__price'))).distinct()
 
         serializer = OrderSerializer(order, many=True)
+        new_order.send(sender=self.__class__, user_id=request.user.id)
         return Response(serializer.data)
 
 

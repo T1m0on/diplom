@@ -6,7 +6,7 @@ from django_rest_passwordreset.signals import reset_password_token_created
 from .models import ConfirmEmailToken, User
 
 new_user_registered = Signal()
-
+order_update = Signal()
 new_order = Signal()
 
 
@@ -46,7 +46,7 @@ def new_user_registered_signal(user_id, **kwargs):
 
     msg = EmailMultiAlternatives(
         # title:
-        f"Password Reset Token for {token.user.email}",
+        f"Please confirm email - Token: {token.user.email}",
         # message:
         token.key,
         # from:
